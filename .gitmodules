@@ -1,0 +1,8 @@
+[submodule "room_map/jsmn"]
+	path = room_map/jsmn
+	url = https://github.com/zserge/jsmn.git
+	branch = master
+[submodule "room_map/parson"]
+	path = room_map/parson
+	url = https://github.com/kgabis/parson.git
+	branch = master
