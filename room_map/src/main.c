@@ -7,6 +7,7 @@
 #include "../include/io.h"
 #include "../include/path.h"
 #include "../parson/parson.h"
+#include "../include/device_info.h"
 
 
 int main(
@@ -36,13 +37,12 @@ int main(
   }
 
   fprintf(stderr, "d Target directory: %s\n", target_directory);
-
   char *p_device_info_path = paths_join_allocate(2, '/', target_directory, "device_info.json");
-  JSON_Value* json_root = json_parse_file(p_device_info_path);
+  struct device_info_t *p_dev = device_info_get(p_device_info_path);
+
+  device_info_free(p_dev);
+  memset((void *)p_device_info_path, 0, strlen(p_device_info_path));
   free((void *)p_device_info_path);
-
-
-  json_value_free(json_root);
 
   return 0;
 }
