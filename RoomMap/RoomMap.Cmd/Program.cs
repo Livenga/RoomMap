@@ -142,7 +142,7 @@ namespace RoomMap.Cmd {
             using(var mf = _frames.First(f => f.Profile.Stream == Stream.Accel).As<MotionFrame>().DisposeWith(frames)) {
               path = System.IO.Path.Join(
                   outputDirectoryPath,
-                  $"{serialNumber}.{mf.Number}-{mf.Profile.Stream}-{mf.Profile.Format}");
+                  $"{serialNumber}.{mf.Number}.{mf.Profile.Stream}-{mf.Profile.Format}");
 
               await mf.SaveAsync(path);
             }
