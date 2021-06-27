@@ -1,4 +1,4 @@
-namespace RoomMap.Cmd.Data {
+namespace RoomMap.Data {
   using System.Text.Json.Serialization;
   using Intel.RealSense;
 

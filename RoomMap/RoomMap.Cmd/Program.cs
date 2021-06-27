@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 
 namespace RoomMap.Cmd {
-  using RoomMap.Cmd.Data;
   using RoomMap.Cmd.Extensions;
+  using RoomMap.Data;
   using Intel.RealSense;
 
   /// <summary></summary>
@@ -122,6 +122,7 @@ namespace RoomMap.Cmd {
           using(var frames = pipeline.WaitForFrames(5000)) {
             var _frames = frames.Select(f => f.DisposeWith(frames)).ToArray();
 
+            Console.Error.WriteLine($"d frame recieved: {serialNumber}");
             using(var df = _frames.First(f => f.Profile.Stream == Stream.Depth).As<DepthFrame>().DisposeWith(frames)) {
               path = System.IO.Path.Join(
                   outputDirectoryPath,

@@ -2,7 +2,7 @@ namespace RoomMap.Cmd.Extensions {
   using System;
   using System.Text.Json;
   using System.Threading.Tasks;
-  using RoomMap.Cmd.Data;
+  using RoomMap.Data;
 
 
   public static class ExtendedFrame {

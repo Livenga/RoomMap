@@ -1,4 +1,4 @@
-namespace RoomMap.Cmd.Data {
+namespace RoomMap.Data {
   /// <summary></summary>
   public class MotionData {
     /// <summary></summary>

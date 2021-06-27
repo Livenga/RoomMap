@@ -1,4 +1,4 @@
-namespace RoomMap.Cmd.Data {
+namespace RoomMap.Data {
   using System;
   using System.Linq;
   using System.Text;

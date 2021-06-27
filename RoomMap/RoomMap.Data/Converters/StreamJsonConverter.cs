@@ -1,21 +1,23 @@
-namespace RoomMap.Cmd.Converters {
+namespace RoomMap.Data.Converters {
   using System;
   using System.Text.Json.Serialization;
   using Intel.RealSense;
 
 
-  public sealed class FormatJsonConverter : JsonConverter<Format> {
-    public override Format Read(
+  /// <summary></summary>
+  public sealed class StreamJsonConverter : JsonConverter<Stream> {
+    /// <summary></summary>
+    public override Stream Read(
         ref System.Text.Json.Utf8JsonReader reader,
         System.Type typeToConvert,
         System.Text.Json.JsonSerializerOptions options) {
-
-      return (Format)Enum.Parse(typeof(Format), reader.GetString() ?? "Any");
+      return (Stream)Enum.Parse(typeof(Stream), reader.GetString() ?? "Any");
     }
 
+    /// <summary></summary>
     public override void Write(
         System.Text.Json.Utf8JsonWriter writer,
-        Format value,
+        Stream value,
         System.Text.Json.JsonSerializerOptions options) {
       writer.WriteStringValue(value.ToString());
     }
