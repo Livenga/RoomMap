@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intel.RealSense", "..\..\li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomMap.Data", "RoomMap.Data\RoomMap.Data.csproj", "{11572872-F249-4F2E-A2A7-27AEB26AD51D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomMap.Ir", "RoomMap.Ir\RoomMap.Ir.csproj", "{A3442C83-3562-41E8-833D-544FEE2C99E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{11572872-F249-4F2E-A2A7-27AEB26AD51D}.Release|x64.Build.0 = Release|Any CPU
 		{11572872-F249-4F2E-A2A7-27AEB26AD51D}.Release|x86.ActiveCfg = Release|Any CPU
 		{11572872-F249-4F2E-A2A7-27AEB26AD51D}.Release|x86.Build.0 = Release|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Release|x64.Build.0 = Release|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3442C83-3562-41E8-833D-544FEE2C99E0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

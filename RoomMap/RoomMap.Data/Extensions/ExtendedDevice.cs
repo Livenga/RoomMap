@@ -1,4 +1,4 @@
-namespace RoomMap.Cmd.Extensions {
+namespace RoomMap.Data.Extensions {
   using System.Linq;
   using Intel.RealSense;
 

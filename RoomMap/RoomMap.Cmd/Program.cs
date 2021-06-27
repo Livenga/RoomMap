@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 
 namespace RoomMap.Cmd {
-  using RoomMap.Cmd.Extensions;
   using RoomMap.Data;
+  using RoomMap.Data.Extensions;
   using Intel.RealSense;
 
   /// <summary></summary>
@@ -126,7 +126,7 @@ namespace RoomMap.Cmd {
             using(var df = _frames.First(f => f.Profile.Stream == Stream.Depth).As<DepthFrame>().DisposeWith(frames)) {
               path = System.IO.Path.Join(
                   outputDirectoryPath,
-                  $"{serialNumber}.{df.Number}.{df.Profile.Stream}-{df.Profile.Format}");
+                  df.ToFileName(serialNumber));
 
               await df.SaveAsync(path);
             }
@@ -134,7 +134,7 @@ namespace RoomMap.Cmd {
             using(var cf = _frames.First(f => f.Profile.Stream == Stream.Color).As<VideoFrame>().DisposeWith(frames)) {
               path = System.IO.Path.Join(
                   outputDirectoryPath,
-                  $"{serialNumber}.{cf.Number}.{cf.Profile.Stream}-{cf.Profile.Format}");
+                  cf.ToFileName(serialNumber));
 
               await cf.SaveAsync(path);
             }
@@ -143,7 +143,7 @@ namespace RoomMap.Cmd {
             using(var mf = _frames.First(f => f.Profile.Stream == Stream.Accel).As<MotionFrame>().DisposeWith(frames)) {
               path = System.IO.Path.Join(
                   outputDirectoryPath,
-                  $"{serialNumber}.{mf.Number}.{mf.Profile.Stream}-{mf.Profile.Format}");
+                  mf.ToFileName(serialNumber));
 
               await mf.SaveAsync(path);
             }

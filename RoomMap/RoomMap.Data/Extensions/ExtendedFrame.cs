@@ -1,11 +1,17 @@
-namespace RoomMap.Cmd.Extensions {
+namespace RoomMap.Data.Extensions {
   using System;
   using System.Text.Json;
   using System.Threading.Tasks;
+  using Intel.RealSense;
   using RoomMap.Data;
 
-
   public static class ExtendedFrame {
+    public static string ToFileName(
+        this Frame frame,
+        long serialNumber) {
+      return $"{serialNumber}.{frame.Number}.{frame.Profile.Index}.{frame.Profile.Stream}-{frame.Profile.Format}";
+    }
+
     /// <summary></summary>
     public static async Task SaveAsync(
         this Intel.RealSense.Frame frame,
