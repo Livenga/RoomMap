@@ -59,7 +59,7 @@ void *io_read(
   memset(p, 0, nmemb * size);
 
   size_t cursor = 0, read_size;
-  while((read_size = fread(p + cursor, size, file_size - cursor, pf)) > 0) {
+  while((read_size = fread((void *)(p + cursor * size), size, (file_size / size) - cursor, pf)) > 0) {
     cursor += read_size;
   }
 
