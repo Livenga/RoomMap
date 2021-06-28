@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdint.h>
-#include "../parson/parson.h"
+#include "../../parson/parson.h"
 #include "../include/device_info.h"
 
 
@@ -17,6 +17,7 @@ struct device_info_t *device_info_get(const char *path) {
 
   p_dev = (struct device_info_t *)calloc(1, sizeof(struct device_info_t));
   p_dev->name = _strcpy_new(json_object_get_string(p_obj, "name"));
+  p_dev->serial_number = _strcpy_new(json_object_get_string(p_obj, "serialNumber"));
   p_dev->product_id = _strcpy_new(json_object_get_string(p_obj, "productId"));
   p_dev->firmware_version = _strcpy_new(json_object_get_string(p_obj, "firmwareVersion"));
   p_dev->depth_scale = json_object_get_number(p_obj, "depthScale");
@@ -41,6 +42,17 @@ struct device_info_t *device_info_get(const char *path) {
   json_value_free(p_json);
 
   return p_dev;
+}
+
+
+struct profile_t *device_info_get_profile_stream(struct device_info_t *this, const char *stream) {
+  for(int i = 0; i < this->profile_count; ++i) {
+    if(strcmp((this->profiles + i)->stream, stream) == 0) {
+      return (this->profiles + i);
+    }
+  }
+
+  return NULL;
 }
 
 void device_info_free(struct device_info_t *this) {

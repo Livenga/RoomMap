@@ -6,9 +6,13 @@ OBJDIR = objs
 SRC = src/main.c \
       src/io.c \
       src/path.c \
-			src/json.c \
-			parson/parson.c \
-			src/device_info.c
+      src/json.c \
+      src/exlib.c \
+      src/exstring.c \
+      src/device_info.c \
+      src/realsense_meta.c \
+			src/ply.c \
+      ../parson/parson.c
 
 LINK = -lm \
        -lpng
@@ -27,7 +31,7 @@ default:
 
 $(PRJC):$(OBJS)
 	$(CC) -o $@ $^ $(FLAGS) \
-		$(LINK)
+	  $(LINK)
 
 $(OBJDIR)/%.o:%.c
 	$(CC) -o $@ -c $< $(FLAGS) \
@@ -41,4 +45,6 @@ clean:
 	[ ! -d $(OBJDIR) ] || rm -rv $(OBJDIR)
 
 run:
-	./$(PRJC) -t ../RoomMap/RoomMap.Cmd/tmp/fe5de5ec-f40c-4fea-a27d-c82774feeda7
+	./$(PRJC) \
+		-n 16 \
+		-t ../RoomMap/RoomMap.Cmd/tmp/acfed9aa-1359-4bc2-bbb2-97c1fe2d6e0a
