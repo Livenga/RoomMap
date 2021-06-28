@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="RoomMap.Wpf.Controls.MotionControl"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+  xmlns:local="clr-namespace:RoomMap.Wpf.Controls"
+  mc:Ignorable="d" 
+  d:DesignHeight="450" d:DesignWidth="800">
+  <Border
+    BorderBrush="#888"
+    BorderThickness="1"
+    CornerRadius="3">
+    <Border.Resources>
+      <Style x:Key="headerStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Margin" Value="0 0 8 0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+      </Style>
+
+      <Style x:Key="valueStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="White" />
+        <Setter Property="BorderThickness" Value="0 0 0 1" />
+        <Setter Property="Foreground" Value="{Binding Foreground, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MotionControl}}}" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="Padding" Value="6 2" />
+        <Setter Property="Margin" Value="0 3" />
+      </Style>
+    </Border.Resources>
+
+    <Grid Margin="12 4">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+
+      <TextBlock
+        Margin="6 0 0 3"
+        Text="{Binding Title, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MotionControl}}}"
+        VerticalAlignment="Center" />
+
+      <Grid Grid.Row="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock
+          Style="{StaticResource headerStyle}"
+          Text="X" />
+        <TextBox
+          Grid.Column="1"
+          Style="{StaticResource valueStyle}"
+          Text="{Binding MotionData.X, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MotionControl}}, StringFormat={}{0:f3}}" />
+
+        <TextBlock
+          Grid.Row="1"
+          Style="{StaticResource headerStyle}"
+          Text="Y" />
+        <TextBox
+          Grid.Row="1" Grid.Column="1"
+          Style="{StaticResource valueStyle}"
+          Text="{Binding MotionData.Y, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MotionControl}}, StringFormat={}{0:f3}}" />
+
+        <TextBlock
+          Grid.Row="2"
+          Style="{StaticResource headerStyle}"
+          Text="Z" />
+        <TextBox
+          Grid.Row="2" Grid.Column="1"
+          Style="{StaticResource valueStyle}"
+          Text="{Binding MotionData.Z, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MotionControl}}, StringFormat={}{0:f3}}" />
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>

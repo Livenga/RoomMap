@@ -1,0 +1,15 @@
+﻿<Application x:Class="RoomMap.Wpf.App"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:RoomMap.Wpf"
+  xmlns:dataConverter="clr-namespace:RoomMap.Wpf.Converter"
+  StartupUri="MainWindow.xaml"
+  Startup="OnAppStartup">
+  <Application.Resources>
+    <SolidColorBrush x:Key="AppBackground" Color="Black" />
+
+    <dataConverter:InverseBooleanConverter x:Key="InverseBoolean" />
+    <dataConverter:IntelDeviceToStringConverter x:Key="IntelDeviceToString" />
+    <dataConverter:StreamProfileToStringConverter x:Key="StreamProfileToString" />
+  </Application.Resources>
+</Application>
