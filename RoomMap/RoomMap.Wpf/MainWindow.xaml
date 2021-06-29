@@ -11,6 +11,7 @@
   Height="720"
   Width="1280"
   WindowState="Maximized"
+  Closing="OnWindowClosing"
   Loaded="OnWindowLoaded">
   <Grid>
     <Grid.ColumnDefinitions>
@@ -116,6 +117,7 @@
           Checked="OnSwitchIsSaveEnable"
           Content="保存(_S)"
           Foreground="White"
+          HorizontalAlignment="Left"
           IsChecked="{Binding IsSaveEnabled, Mode=TwoWay}"
           Margin="0 3 0 6"
           Unchecked="OnSwitchIsSaveEnable" />

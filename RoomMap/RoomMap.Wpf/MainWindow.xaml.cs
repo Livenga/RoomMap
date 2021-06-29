@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace RoomMap.Wpf {
   using Microsoft.WindowsAPICodePack.Dialogs;
   using Intel.RealSense;
   using RoomMap.Wpf.Data;
+  using RoomMap.Wpf.Extensions;
 
 
     /// <summary>Interaction logic for MainWindow.xaml</summary>
@@ -39,11 +41,17 @@ namespace RoomMap.Wpf {
 
 
     /// <summary></summary>
-    private void OnWindowLoaded(
+    private async void OnWindowLoaded(
         object source,
         RoutedEventArgs e) {
-      if(Application.Current is App _app) {
-        ViewModel.OutputDirectory = _app.LocalPath;
+      try {
+        var cfg = await CommonConfig.LoadAsync("app.conf");
+        ViewModel.OutputDirectory = cfg.OutputDirectory;
+        ViewModel.IsSaveEnabled = cfg.IsSaveEnabled;
+      } catch {
+        if(Application.Current is App _app) {
+          ViewModel.OutputDirectory = _app.LocalPath;
+        }
       }
 
       using(var ctx = new Context()) {
@@ -62,6 +70,23 @@ namespace RoomMap.Wpf {
           ViewModel.Devices.Add(dev);
         }
         ViewModel.SelectedDevice = ViewModel.Devices.FirstOrDefault();
+      }
+    }
+
+    /// <summary></summary>
+    private async void OnWindowClosing(object source, CancelEventArgs e) {
+      var cfg = new CommonConfig() {
+        OutputDirectory = ViewModel.OutputDirectory,
+        IsSaveEnabled = ViewModel.IsSaveEnabled
+      };
+
+      try {
+        await cfg.SaveAsync("app.conf");
+      } catch(Exception except) {
+#if DEBUG
+        Debug.WriteLine($"d {except.GetType().Name} {except.Message}");
+        Debug.WriteLine($"{except.StackTrace}");
+#endif
       }
     }
 
@@ -85,18 +110,48 @@ namespace RoomMap.Wpf {
           .FirstOrDefault(s => s.Is(Extension.MotionSensor));
 
         if(depthSensor != null) {
-          foreach(var prof in depthSensor.StreamProfiles) {
+          Debug.WriteLine($"d Depth Options");
+          foreach(var opt in Enum.GetValues(typeof(Option))
+              .Cast<Option>()
+              .Where(opt => depthSensor.Options.Supports(opt))
+              .Select(opt => depthSensor.Options[opt])) {
+            Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
+          }
+
+          foreach(var prof in depthSensor.StreamProfiles
+              .Where(prof => prof.Is(Extension.VideoProfile))
+              .Select(prof => prof.As<VideoStreamProfile>())
+              .Where(prof => prof.Stream == Stream.Depth && prof.Format == Format.Z16)) {
             ViewModel.DepthStreamProfiles.Add(prof);
           }
           ViewModel.SelectedDepthStreamProfile = ViewModel.DepthStreamProfiles.FirstOrDefault();
         }
         if(colorSensor != null) {
-          foreach(var prof in colorSensor.StreamProfiles) {
+          Debug.WriteLine($"d Color Options");
+          foreach(var opt in Enum.GetValues(typeof(Option))
+              .Cast<Option>()
+              .Where(opt => colorSensor.Options.Supports(opt))
+              .Select(opt => colorSensor.Options[opt])) {
+            Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
+          }
+
+          foreach(var prof in colorSensor.StreamProfiles
+              .Where(prof => prof.Is(Extension.VideoProfile))
+              .Select(prof => prof.As<VideoStreamProfile>())
+              .Where(prof => prof.Stream == Stream.Color && prof.Format == Format.Rgb8)) {
             ViewModel.ColorStreamProfiles.Add(prof);
           }
           ViewModel.SelectedColorStreamProfile = ViewModel.ColorStreamProfiles.FirstOrDefault();
         }
         if(motionSensor != null) {
+          Debug.WriteLine($"d Motion Options");
+          foreach(var opt in Enum.GetValues(typeof(Option))
+              .Cast<Option>()
+              .Where(opt => motionSensor.Options.Supports(opt))
+              .Select(opt => motionSensor.Options[opt])) {
+            Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
+          }
+
           foreach(var prof in motionSensor.StreamProfiles) {
             ViewModel.MotionStreamProfiles.Add(prof);
           }
@@ -138,6 +193,7 @@ namespace RoomMap.Wpf {
     private Task? pipelineTask = null;
     private long serialNumber = 0;
     private bool isSaveEnabled = false;
+    private Guid targetId = Guid.Empty;
 
     private WriteableBitmap? depthBitmap = null;
     private WriteableBitmap? colorBitmap = null;
@@ -148,6 +204,7 @@ namespace RoomMap.Wpf {
       if(! ViewModel.IsRecording) {
         // 開始
         serialNumber = 0;
+        targetId = Guid.NewGuid();
 
         context  = new Context();
         pipeline = new Pipeline(context);
@@ -231,6 +288,7 @@ namespace RoomMap.Wpf {
         } catch { }
 
         context?.Dispose();
+        targetId = Guid.Empty;
       }
     }
 
@@ -240,6 +298,15 @@ namespace RoomMap.Wpf {
         return;
       }
 
+
+      var _outputDirectory = Dispatcher.Invoke(
+          (Func<string?>)(() => ViewModel.IsSaveEnabled
+              ? System.IO.Path.Join(ViewModel.OutputDirectory, $"{targetId.ToString()}")
+              : null ));
+
+      if(_outputDirectory != null && ! System.IO.Directory.Exists(_outputDirectory)) {
+        System.IO.Directory.CreateDirectory(_outputDirectory);
+      }
 
       var pipeline = (Pipeline)state;
 
@@ -255,7 +322,11 @@ namespace RoomMap.Wpf {
               .As<VideoFrame>()
               .DisposeWith(frames)) {
             if(depth != null) {
+              if(_outputDirectory != null) {
+                await depth.SaveAsync(_outputDirectory, serialNumber);
+              }
               Debug.WriteLine($"d {depth.Width}x{depth.Height} {depth.Profile.Stream} {depth.Profile.Format}");
+              Debug.WriteLine($"d {depth.Profile.Index} {depth.Number}");
 
               using(var colorized = colorizer.Process<VideoFrame>(depth).DisposeWith(frames)) {
                 await DepthImage.Dispatcher.BeginInvoke(
@@ -269,6 +340,10 @@ namespace RoomMap.Wpf {
               .As<VideoFrame>()
               .DisposeWith(frames)) {
             if(color != null) {
+              if(_outputDirectory != null) {
+                await color.SaveAsync(_outputDirectory, serialNumber);
+              }
+
               Debug.WriteLine($"d {color.Width}x{color.Height} {color.Profile.Stream} {color.Profile.Format}");
 
               await DepthImage.Dispatcher.BeginInvoke(
