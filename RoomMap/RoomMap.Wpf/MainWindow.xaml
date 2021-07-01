@@ -15,12 +15,17 @@
   Loaded="OnWindowLoaded">
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition MinWidth="180" Width="320" MaxWidth="480" />
+      <ColumnDefinition MinWidth="240" Width="480" MaxWidth="720" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition />
     </Grid.ColumnDefinitions>
 
     <Grid Background="#686868">
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
       <Grid.Resources>
         <Style x:Key="headerStyle" TargetType="{x:Type TextBlock}">
           <Setter Property="Foreground" Value="White" />
@@ -38,99 +43,204 @@
         </DataTemplate>
       </Grid.Resources>
 
-      <StackPanel Margin="6 8" Orientation="Vertical">
-        <TextBlock
-          Text="Intel Devices"
-          Style="{StaticResource headerStyle}" />
-
-        <ComboBox
-          x:Name="DeviceList"
-          ItemsSource="{Binding Devices, Mode=OneTime}"
-          SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
-          SelectionChanged="OnDeviceListSelectionChanged">
-          <ComboBox.ItemTemplate>
-            <DataTemplate>
-              <TextBlock
-                Style="{StaticResource comboBoxElementStyle}"
-                Text="{Binding Mode=OneTime, Converter={StaticResource IntelDeviceToString}}" />
-            </DataTemplate>
-          </ComboBox.ItemTemplate>
-        </ComboBox>
-
-        <TextBlock
-          Text="Depth Sensor Profiles"
-          Style="{StaticResource headerStyle}" />
-
-        <ComboBox
-          x:Name="DepthStreamProfileList"
-          ItemsSource="{Binding DepthStreamProfiles, Mode=OneTime}"
-          ItemTemplate="{StaticResource streamProfileTemplate}"
-          SelectedItem="{Binding SelectedDepthStreamProfile, Mode=TwoWay}" />
-
-        <TextBlock
-          Text="Color Sensor Profiles"
-          Style="{StaticResource headerStyle}" />
-
-        <ComboBox
-          x:Name="ColorStreamProfileList"
-          ItemsSource="{Binding ColorStreamProfiles, Mode=OneTime}"
-          ItemTemplate="{StaticResource streamProfileTemplate}"
-          SelectedItem="{Binding SelectedColorStreamProfile, Mode=TwoWay}" />
-
-        <TextBlock
-          Text="MotionSensor Profiles"
-          Style="{StaticResource headerStyle}" />
-
-        <ComboBox
-          x:Name="MotionStreamProfileList"
-          ItemsSource="{Binding MotionStreamProfiles, Mode=OneTime}"
-          ItemTemplate="{StaticResource streamProfileTemplate}"
-          SelectedItem="{Binding SelectedMotionStreamProfile, Mode=TwoWay}" />
-
-        <Grid Margin="0 6 0 3">
+      <ScrollViewer
+        Padding="3 0"
+        Margin="6 8"
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel
+          Orientation="Vertical">
           <TextBlock
+            Text="Intel Devices"
+            Style="{StaticResource headerStyle}" />
+
+          <ComboBox
+            x:Name="DeviceList"
+            ItemsSource="{Binding Devices, Mode=OneTime}"
+            SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
+            SelectionChanged="OnDeviceListSelectionChanged">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock
+                  Style="{StaticResource comboBoxElementStyle}"
+                  Text="{Binding Mode=OneTime, Converter={StaticResource IntelDeviceToString}}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+
+          <TextBlock
+            Text="Depth Sensor Profiles"
+            Style="{StaticResource headerStyle}" />
+
+          <ComboBox
+            x:Name="DepthStreamProfileList"
+            ItemsSource="{Binding DepthStreamProfiles, Mode=OneTime}"
+            ItemTemplate="{StaticResource streamProfileTemplate}"
+            SelectedItem="{Binding SelectedDepthStreamProfile, Mode=TwoWay}" />
+
+          <TextBlock
+            Text="Color Sensor Profiles"
+            Style="{StaticResource headerStyle}" />
+
+          <ComboBox
+            x:Name="ColorStreamProfileList"
+            ItemsSource="{Binding ColorStreamProfiles, Mode=OneTime}"
+            ItemTemplate="{StaticResource streamProfileTemplate}"
+            SelectedItem="{Binding SelectedColorStreamProfile, Mode=TwoWay}" />
+
+          <TextBlock
+            Text="MotionSensor Profiles"
+            Style="{StaticResource headerStyle}" />
+
+          <ComboBox
+            x:Name="MotionStreamProfileList"
+            ItemsSource="{Binding MotionStreamProfiles, Mode=OneTime}"
+            ItemTemplate="{StaticResource streamProfileTemplate}"
+            SelectedItem="{Binding SelectedMotionStreamProfile, Mode=TwoWay}" />
+
+          <Grid Margin="0 6 0 3">
+            <TextBlock
+              HorizontalAlignment="Left"
+              Style="{StaticResource headerStyle}"
+              Margin="0"
+              Text="出力先ディレクトリ"
+              VerticalAlignment="Center" />
+
+            <Button
+              x:Name="ChooseOutputDirectoryButton"
+              Click="OnChooseOutputDirectoryClick"
+              Content="選択(_C)"
+              Padding="12 2"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center" />
+          </Grid>
+
+          <TextBox
+            Background="Transparent"
+            BorderBrush="White"
+            BorderThickness="0 0 0 1"
+            Foreground="White"
+            Padding="3 2"
+            Margin="0 3 0 6"
+            Text="{Binding OutputDirectory, Mode=TwoWay}" />
+
+          <CheckBox
+            Checked="OnSwitchIsSaveEnable"
+            Content="保存(_S)"
+            Foreground="White"
             HorizontalAlignment="Left"
-            Style="{StaticResource headerStyle}"
-            Margin="0"
-            Text="出力先ディレクトリ"
-            VerticalAlignment="Center" />
+            IsChecked="{Binding IsSaveEnabled, Mode=TwoWay}"
+            Margin="0 3 0 6"
+            Unchecked="OnSwitchIsSaveEnable" />
 
-          <Button
-            x:Name="ChooseOutputDirectoryButton"
-            Click="OnChooseOutputDirectoryClick"
-            Content="選択(_C)"
-            Padding="12 2"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center" />
-        </Grid>
+          <Expander
+            ExpandDirection="Down"
+            Foreground="White"
+            Header="Depth Sensor Options"
+            IsExpanded="True"
+            Margin="0 3 0 6">
+            <StackPanel Orientation="Vertical">
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="33000"
+                HeaderText="Exposure(露光)"
+                Minimum="1"
+                Maximum="165000"
+                SmallChange="0.1"
+                TickFrequency="0.1"
+                Value="{Binding DepthExposure, Mode=TwoWay}" />
 
-        <TextBox
-          Background="Transparent"
-          BorderBrush="White"
-          BorderThickness="0 0 0 1"
-          Foreground="White"
-          Padding="3 2"
-          Margin="0 3 0 6"
-          Text="{Binding OutputDirectory, Mode=TwoWay}" />
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="16"
+                HeaderText="Gain"
+                Minimum="16"
+                Maximum="248"
+                SmallChange="0.1"
+                TickFrequency="0.1"
+                Value="{Binding DepthGain, Mode=TwoWay}" />
 
-        <CheckBox
-          Checked="OnSwitchIsSaveEnable"
-          Content="保存(_S)"
-          Foreground="White"
-          HorizontalAlignment="Left"
-          IsChecked="{Binding IsSaveEnabled, Mode=TwoWay}"
-          Margin="0 3 0 6"
-          Unchecked="OnSwitchIsSaveEnable" />
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="150"
+                HeaderText="LaserPower"
+                Minimum="0"
+                Maximum="360"
+                SmallChange="0.1"
+                TickFrequency="0.1"
+                Value="{Binding DepthLaserPower, Mode=TwoWay}" />
+            </StackPanel>
+          </Expander>
 
-        <Button
-          x:Name="RecordButton"
-          Click="OnRecordingClick"
-          Content="_Record"
-          HorizontalAlignment="Right"
-          Padding="12 3"
-          Margin="0 4"
-          VerticalAlignment="Center" />
+          <Expander
+            ExpandDirection="Down"
+            Foreground="White"
+            Header="Color Sensor Options"
+            IsExpanded="True"
+            Margin="0 3 0 6">
+            <StackPanel Orientation="Vertical">
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="0"
+                HeaderText="Brightness"
+                Minimum="-64"
+                Maximum="64"
+                SmallChange="0.1"
+                TickFrequency="0.1"
+                Value="{Binding ColorBrightness, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="50"
+                HeaderText="Contrast"
+                Minimum="0"
+                Maximum="100"
+                SmallChange="0.1"
+                TickFrequency="0.1"
+                Value="{Binding ColorContrast, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="156"
+                HeaderText="Exposure(露光)"
+                Minimum="0"
+                Maximum="10000"
+                SmallChange="1"
+                TickFrequency="1"
+                Value="{Binding ColorExposure, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="64"
+                HeaderText="Gain"
+                Minimum="0"
+                Maximum="128"
+                SmallChange="0.1"
+                TickFrequency=".1"
+                Value="{Binding ColorGain, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="300"
+                HeaderText="Gamma"
+                Minimum="100"
+                Maximum="500"
+                SmallChange=".1"
+                TickFrequency=".1"
+                Value="{Binding ColorGamma, Mode=TwoWay}" />
+            </StackPanel>
+          </Expander>
       </StackPanel>
+    </ScrollViewer>
+
+    <Button
+      x:Name="RecordButton"
+      Grid.Row="1"
+      Click="OnRecordingClick"
+      Content="_Record"
+      HorizontalAlignment="Right"
+      Padding="18 6"
+      Margin="3 6"
+      VerticalAlignment="Center" />
     </Grid>
 
 
@@ -142,17 +252,13 @@
 
 
     <Grid Grid.Column="2">
-      <Grid VerticalAlignment="Center">
+      <Grid>
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
+          <RowDefinition />
+          <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
-        <Grid Margin="6" VerticalAlignment="Center">
+        <Grid Margin="6">
           <Image x:Name="DepthImage"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />
@@ -165,7 +271,7 @@
             VerticalAlignment="Top" /> 
         </Grid>
 
-        <Grid Grid.Column="1" Margin="6" VerticalAlignment="Center">
+        <Grid Grid.Row="2" Margin="6">
           <Image x:Name="ColorImage"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />
@@ -181,6 +287,7 @@
 
       <controls:MotionControl
         x:Name="RealSenseAccelControl"
+        Background="#aa000000"
         Foreground="White"
         HorizontalAlignment="Right"
         Margin="0 0 6 6"

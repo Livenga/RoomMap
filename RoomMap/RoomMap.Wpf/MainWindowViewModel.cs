@@ -57,6 +57,54 @@ namespace RoomMap.Wpf {
     }
 
     /// <summary></summary>
+    public float DepthExposure {
+      set => SetProperty(ref depthExposure, value, nameof(DepthExposure));
+      get => depthExposure;
+    }
+
+    /// <summary></summary>
+    public float DepthGain {
+      set => SetProperty(ref depthGain, value, nameof(DepthGain));
+      get => depthGain;
+    }
+
+    /// <summary></summary>
+    public float DepthLaserPower {
+      set => SetProperty(ref depthLaserPower, value, nameof(DepthLaserPower));
+      get => depthLaserPower;
+    }
+
+    /// <summary></summary>
+    public float ColorBrightness {
+      set => SetProperty(ref colorBrightness, value, nameof(ColorBrightness));
+      get => colorBrightness;
+    }
+
+    /// <summary></summary>
+    public float ColorContrast {
+      set => SetProperty(ref colorContrast, value, nameof(ColorContrast));
+      get => colorContrast;
+    }
+
+    /// <summary></summary>
+    public float ColorExposure {
+      set => SetProperty(ref colorExposure, value, nameof(ColorExposure));
+      get => colorExposure;
+    }
+
+    /// <summary></summary>
+    public float ColorGain {
+      set => SetProperty(ref colorGain, value, nameof(ColorGain));
+      get => colorGain;
+    }
+
+    /// <summary></summary>
+    public float ColorGamma {
+      set => SetProperty(ref colorGamma, value, nameof(ColorGamma));
+      get => colorGamma;
+    }
+
+    /// <summary></summary>
     public string DepthFrameText {
       set => SetProperty(ref depthFrameText, value, nameof(DepthFrameText));
       get => depthFrameText;
@@ -82,6 +130,16 @@ namespace RoomMap.Wpf {
     private bool isSaveEnabled = false;
     private bool isRecording = false;
     private string outputDirectory = string.Empty;
+
+    private float depthExposure   = 33000f;
+    private float depthGain       = 16f;
+    private float depthLaserPower = 150f;
+
+    private float colorBrightness = 0f;
+    private float colorContrast = 50f;
+    private float colorExposure = 156f;
+    private float colorGain = 64f;
+    private float colorGamma = 300f;
 
     private string depthFrameText = string.Empty;
     private string colorFrameText = string.Empty;

@@ -90,6 +90,11 @@ namespace RoomMap.Wpf {
       }
     }
 
+
+    private Sensor? depthSensor = null;
+    private Sensor? colorSensor = null;
+    private Sensor? motionSensor = null;
+
     /// <summary></summary>
     private  void OnDeviceListSelectionChanged(
         object source,
@@ -102,21 +107,21 @@ namespace RoomMap.Wpf {
       } else {
         var dev = ViewModel.SelectedDevice;
 
-        var depthSensor = dev.QuerySensors()
+        depthSensor = dev.QuerySensors()
           .FirstOrDefault(s => s.Is(Extension.DepthStereoSensor));
-        var colorSensor = dev.QuerySensors()
+        colorSensor = dev.QuerySensors()
           .FirstOrDefault(s => s.Is(Extension.ColorSensor));
-        var motionSensor = dev.QuerySensors()
+        motionSensor = dev.QuerySensors()
           .FirstOrDefault(s => s.Is(Extension.MotionSensor));
 
         if(depthSensor != null) {
-          Debug.WriteLine($"d Depth Options");
+          /* Debug.WriteLine($"d Depth Options");
           foreach(var opt in Enum.GetValues(typeof(Option))
               .Cast<Option>()
               .Where(opt => depthSensor.Options.Supports(opt))
               .Select(opt => depthSensor.Options[opt])) {
             Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
-          }
+          } */
 
           foreach(var prof in depthSensor.StreamProfiles
               .Where(prof => prof.Is(Extension.VideoProfile))
@@ -127,13 +132,13 @@ namespace RoomMap.Wpf {
           ViewModel.SelectedDepthStreamProfile = ViewModel.DepthStreamProfiles.FirstOrDefault();
         }
         if(colorSensor != null) {
-          Debug.WriteLine($"d Color Options");
+          /* Debug.WriteLine($"d Color Options");
           foreach(var opt in Enum.GetValues(typeof(Option))
               .Cast<Option>()
               .Where(opt => colorSensor.Options.Supports(opt))
               .Select(opt => colorSensor.Options[opt])) {
             Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
-          }
+          } */
 
           foreach(var prof in colorSensor.StreamProfiles
               .Where(prof => prof.Is(Extension.VideoProfile))
@@ -144,13 +149,13 @@ namespace RoomMap.Wpf {
           ViewModel.SelectedColorStreamProfile = ViewModel.ColorStreamProfiles.FirstOrDefault();
         }
         if(motionSensor != null) {
-          Debug.WriteLine($"d Motion Options");
+          /* Debug.WriteLine($"d Motion Options");
           foreach(var opt in Enum.GetValues(typeof(Option))
               .Cast<Option>()
               .Where(opt => motionSensor.Options.Supports(opt))
               .Select(opt => motionSensor.Options[opt])) {
             Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
-          }
+          } */
 
           foreach(var prof in motionSensor.StreamProfiles) {
             ViewModel.MotionStreamProfiles.Add(prof);
@@ -164,10 +169,10 @@ namespace RoomMap.Wpf {
     /// <summary>出力先選択押下</summary>
     private void OnChooseOutputDirectoryClick(object source, RoutedEventArgs e) {
       using(var dialog = new CommonOpenFileDialog()) {
-        dialog.Title = "出力先ディレクトリを指定してください.";
+        dialog.Title            = "出力先ディレクトリを指定してください.";
         dialog.RestoreDirectory = true;
-        dialog.IsFolderPicker = true;
-        dialog.Multiselect = false;
+        dialog.IsFolderPicker   = true;
+        dialog.Multiselect      = false;
         dialog.InitialDirectory = ViewModel.OutputDirectory;
 
         var result = dialog.ShowDialog(this);
@@ -200,7 +205,7 @@ namespace RoomMap.Wpf {
 
 
     /// <summary></summary>
-    private void OnRecordingClick(object source, RoutedEventArgs e) {
+    private async void OnRecordingClick(object source, RoutedEventArgs e) {
       if(! ViewModel.IsRecording) {
         // 開始
         serialNumber = 0;
@@ -208,6 +213,19 @@ namespace RoomMap.Wpf {
 
         context  = new Context();
         pipeline = new Pipeline(context);
+
+        if(depthSensor != null) {
+          depthSensor.Options[Option.Exposure].Value   = ViewModel.DepthExposure;
+          depthSensor.Options[Option.Gain].Value       = ViewModel.DepthGain;
+          depthSensor.Options[Option.LaserPower].Value = ViewModel.DepthLaserPower;
+        }
+        if(colorSensor != null) {
+          colorSensor.Options[Option.Brightness].Value = ViewModel.ColorBrightness;
+          colorSensor.Options[Option.Contrast].Value   = ViewModel.ColorContrast;
+          colorSensor.Options[Option.Exposure].Value   = ViewModel.ColorExposure;
+          colorSensor.Options[Option.Gain].Value       = ViewModel.ColorGain;
+          colorSensor.Options[Option.Gamma].Value      = ViewModel.ColorGamma;
+        }
 
         var cfg = new Config();
         cfg.DisableAllStreams();
@@ -224,6 +242,7 @@ namespace RoomMap.Wpf {
               palette:     null);
           DepthImage.Source = depthBitmap;
 
+          // DpethStream 有効化
           cfg.EnableStream(
               stream_type:  prof.Stream,
               stream_index: prof.Index,
@@ -244,6 +263,7 @@ namespace RoomMap.Wpf {
               palette:     null);
           ColorImage.Source = colorBitmap;
 
+          // Color Stream 有効化
           cfg.EnableStream(
               stream_type:  prof.Stream,
               stream_index: prof.Index,
@@ -255,8 +275,9 @@ namespace RoomMap.Wpf {
         if(ViewModel.SelectedMotionStreamProfile != null) {
           var prof = ViewModel.SelectedMotionStreamProfile.As<MotionStreamProfile>();
 
+          // Accel Stream 有効化
           cfg.EnableStream(
-              stream_type: prof.Stream,
+              stream_type:  prof.Stream,
               stream_index: prof.Index,
               framerate:    prof.Framerate,
               format:       prof.Format);
@@ -279,8 +300,10 @@ namespace RoomMap.Wpf {
         }
       } else { 
         ViewModel.IsRecording = false;
+        RecordButton.IsEnabled = false;
+
         // 停止
-        pipeline?.Stop();
+        await Task.Factory.StartNew(() => pipeline?.Stop());
 
         try {
           tokenSource?.Cancel(true);
@@ -289,6 +312,8 @@ namespace RoomMap.Wpf {
 
         context?.Dispose();
         targetId = Guid.Empty;
+
+        RecordButton.IsEnabled = true;
       }
     }
 
