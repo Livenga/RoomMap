@@ -13,17 +13,17 @@ namespace RoomMap.Wpf {
     public bool IsSaveEnabled { set; get; } = false;
 
     /// <summary></summary>
-    public DepthSensorOption DepthSensorOption { private set; get; } = new DepthSensorOption();
+    public DepthSensorOption DepthSensorOption { set; get; } = new DepthSensorOption();
 
     /// <summary></summary>
-    public ColorSensorOption ColorSensorOption { private set; get; } = new ColorSensorOption();
+    public ColorSensorOption ColorSensorOption { set; get; } = new ColorSensorOption();
 
 
     /// <summary></summary>
     public async Task SaveAsync(Stream stream) {
       var opt = new JsonSerializerOptions() {
-        WriteIndented = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented        = true,
       };
 
       await JsonSerializer.SerializeAsync<CommonConfig>(
@@ -46,7 +46,8 @@ namespace RoomMap.Wpf {
     /// <summary></summary>
     public static async Task<CommonConfig> LoadAsync(Stream stream) {
       var opt = new JsonSerializerOptions() {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented        = true,
       };
 
       var cfg = await JsonSerializer.DeserializeAsync<CommonConfig>(

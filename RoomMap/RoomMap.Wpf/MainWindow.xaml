@@ -145,8 +145,8 @@
                 HeaderText="Exposure(露光)"
                 Minimum="1"
                 Maximum="165000"
-                SmallChange="0.1"
-                TickFrequency="0.1"
+                SmallChange="1"
+                TickFrequency="1"
                 Value="{Binding DepthExposure, Mode=TwoWay}" />
 
               <controls:SliderGroup
@@ -155,8 +155,8 @@
                 HeaderText="Gain"
                 Minimum="16"
                 Maximum="248"
-                SmallChange="0.1"
-                TickFrequency="0.1"
+                SmallChange="1"
+                TickFrequency="1"
                 Value="{Binding DepthGain, Mode=TwoWay}" />
 
               <controls:SliderGroup
@@ -166,7 +166,7 @@
                 Minimum="0"
                 Maximum="360"
                 SmallChange="0.1"
-                TickFrequency="0.1"
+                TickFrequency="30"
                 Value="{Binding DepthLaserPower, Mode=TwoWay}" />
             </StackPanel>
           </Expander>
@@ -184,8 +184,8 @@
                 HeaderText="Brightness"
                 Minimum="-64"
                 Maximum="64"
-                SmallChange="0.1"
-                TickFrequency="0.1"
+                SmallChange="1"
+                TickFrequency="1"
                 Value="{Binding ColorBrightness, Mode=TwoWay}" />
 
               <controls:SliderGroup
@@ -194,8 +194,8 @@
                 HeaderText="Contrast"
                 Minimum="0"
                 Maximum="100"
-                SmallChange="0.1"
-                TickFrequency="0.1"
+                SmallChange="1"
+                TickFrequency="1"
                 Value="{Binding ColorContrast, Mode=TwoWay}" />
 
               <controls:SliderGroup
@@ -214,8 +214,8 @@
                 HeaderText="Gain"
                 Minimum="0"
                 Maximum="128"
-                SmallChange="0.1"
-                TickFrequency=".1"
+                SmallChange="1"
+                TickFrequency="1"
                 Value="{Binding ColorGain, Mode=TwoWay}" />
 
               <controls:SliderGroup
@@ -224,8 +224,8 @@
                 HeaderText="Gamma"
                 Minimum="100"
                 Maximum="500"
-                SmallChange=".1"
-                TickFrequency=".1"
+                SmallChange="1"
+                TickFrequency="1"
                 Value="{Binding ColorGamma, Mode=TwoWay}" />
             </StackPanel>
           </Expander>
