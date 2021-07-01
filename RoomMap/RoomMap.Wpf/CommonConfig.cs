@@ -12,6 +12,12 @@ namespace RoomMap.Wpf {
     /// <summary></summary>
     public bool IsSaveEnabled { set; get; } = false;
 
+    /// <summary></summary>
+    public DepthSensorOption DepthSensorOption { private set; get; } = new DepthSensorOption();
+
+    /// <summary></summary>
+    public ColorSensorOption ColorSensorOption { private set; get; } = new ColorSensorOption();
+
 
     /// <summary></summary>
     public async Task SaveAsync(Stream stream) {

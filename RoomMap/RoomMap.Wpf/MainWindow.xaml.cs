@@ -47,7 +47,17 @@ namespace RoomMap.Wpf {
       try {
         var cfg = await CommonConfig.LoadAsync("app.conf");
         ViewModel.OutputDirectory = cfg.OutputDirectory;
-        ViewModel.IsSaveEnabled = cfg.IsSaveEnabled;
+        ViewModel.IsSaveEnabled   = cfg.IsSaveEnabled;
+
+        ViewModel.DepthExposure   = cfg.DepthSensorOption.Exposure;
+        ViewModel.DepthGain       = cfg.DepthSensorOption.Gain;
+        ViewModel.DepthLaserPower = cfg.DepthSensorOption.LaserPower;
+
+        ViewModel.ColorBrightness = cfg.ColorSensorOption.Brightness;
+        ViewModel.ColorContrast   = cfg.ColorSensorOption.Contrast;
+        ViewModel.ColorExposure   = cfg.ColorSensorOption.Exposure;
+        ViewModel.ColorGain       = cfg.ColorSensorOption.Gain;
+        ViewModel.ColorGamma      = cfg.ColorSensorOption.Gamma;
       } catch {
         if(Application.Current is App _app) {
           ViewModel.OutputDirectory = _app.LocalPath;
@@ -79,6 +89,15 @@ namespace RoomMap.Wpf {
         OutputDirectory = ViewModel.OutputDirectory,
         IsSaveEnabled = ViewModel.IsSaveEnabled
       };
+      cfg.DepthSensorOption.Exposure   = ViewModel.DepthExposure;
+      cfg.DepthSensorOption.Gain       = ViewModel.DepthGain;
+      cfg.DepthSensorOption.LaserPower = ViewModel.DepthLaserPower;
+
+      cfg.ColorSensorOption.Brightness = ViewModel.ColorBrightness;
+      cfg.ColorSensorOption.Contrast   = ViewModel.ColorContrast;
+      cfg.ColorSensorOption.Exposure   = ViewModel.ColorExposure;
+      cfg.ColorSensorOption.Gain       = ViewModel.ColorGain;
+      cfg.ColorSensorOption.Gamma      = ViewModel.ColorGamma;
 
       try {
         await cfg.SaveAsync("app.conf");
