@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 
 namespace RoomMap.Wpf {
@@ -26,26 +19,35 @@ namespace RoomMap.Wpf {
 
     /// <summary>Interaction logic for MainWindow.xaml</summary>
   public partial class MainWindow : Window {
-    /// <summary></summary>
+    /// <summary>ViewModel</summary>
     public MainWindowViewModel ViewModel =>
       (MainWindowViewModel)DataContext;
 
     private readonly Colorizer colorizer = new();
 
 
-    /// <summary></summary>
+    /// <summary>ctor</summary>
     public MainWindow() {
       InitializeComponent();
       DataContext = new MainWindowViewModel();
     }
 
 
-    /// <summary></summary>
+    /// <summary>
+    /// Loaded Event
+    /// 認識したデバイスの反映と該当するセンサを取得
+    /// </summary>
     private async void OnWindowLoaded(
         object source,
         RoutedEventArgs e) {
+      if(Application.Current is App _app) {
+        ViewModel.OutputDirectory = _app.LocalPath;
+      }
+
       try {
+        // 設定反映
         var cfg = await CommonConfig.LoadAsync("app.conf");
+
         ViewModel.OutputDirectory = cfg.OutputDirectory;
         ViewModel.IsSaveEnabled   = cfg.IsSaveEnabled;
 
@@ -58,20 +60,21 @@ namespace RoomMap.Wpf {
         ViewModel.ColorExposure   = cfg.ColorSensorOption.Exposure;
         ViewModel.ColorGain       = cfg.ColorSensorOption.Gain;
         ViewModel.ColorGamma      = cfg.ColorSensorOption.Gamma;
-      } catch {
-        if(Application.Current is App _app) {
-          ViewModel.OutputDirectory = _app.LocalPath;
-        }
+      } catch(Exception except) {
+#if DEBUG
+        Debug.WriteLine($"w {except.GetType().Name} {except.Message}");
+        Debug.WriteLine(except.StackTrace);
+#endif
       }
 
       using(var ctx = new Context()) {
         var devices = ctx.QueryDevices();
         if(devices.Count == 0) {
           MessageBox.Show(
-              caption: "警告",
+              caption:        "警告",
               messageBoxText: "Intel RealSense デバイスが検出されませんでした.",
-              icon: MessageBoxImage.Warning,
-              button: MessageBoxButton.OK);
+              icon:           MessageBoxImage.Warning,
+              button:         MessageBoxButton.OK);
 
           return;
         }
@@ -83,8 +86,17 @@ namespace RoomMap.Wpf {
       }
     }
 
-    /// <summary></summary>
-    private async void OnWindowClosing(object source, CancelEventArgs e) {
+    /// <summary>
+    /// Closing Event
+    /// </summary>
+    private async void OnWindowClosing(
+        object source,
+        CancelEventArgs e) {
+      if(ViewModel.IsRecording) {
+        e.Cancel = true;
+        return;
+      }
+
       var cfg = new CommonConfig() {
         OutputDirectory = ViewModel.OutputDirectory,
         IsSaveEnabled = ViewModel.IsSaveEnabled
@@ -100,6 +112,7 @@ namespace RoomMap.Wpf {
       cfg.ColorSensorOption.Gamma      = ViewModel.ColorGamma;
 
       try {
+        // 設定保存
         await cfg.SaveAsync("app.conf");
       } catch(Exception except) {
 #if DEBUG
@@ -114,7 +127,9 @@ namespace RoomMap.Wpf {
     private Sensor? colorSensor = null;
     private Sensor? motionSensor = null;
 
-    /// <summary></summary>
+    /// <summary>
+    /// 操作対象デバイス変更
+    /// </summary>
     private  void OnDeviceListSelectionChanged(
         object source,
         SelectionChangedEventArgs e) {
@@ -185,7 +200,9 @@ namespace RoomMap.Wpf {
     }
 
 
-    /// <summary>出力先選択押下</summary>
+    /// <summary>
+    /// 出力先選択押下
+    /// </summary>
     private void OnChooseOutputDirectoryClick(object source, RoutedEventArgs e) {
       using(var dialog = new CommonOpenFileDialog()) {
         dialog.Title            = "出力先ディレクトリを指定してください.";
@@ -201,12 +218,11 @@ namespace RoomMap.Wpf {
       }
     }
 
-    /// <summary>保存状態の切り替え</summary>
+    /// <summary>
+    /// 保存状態の切り替え
+    /// </summary>
     private void OnSwitchIsSaveEnable(object source, RoutedEventArgs e) {
       isSaveEnabled = ViewModel.IsSaveEnabled;
-#if DEBUG
-      Debug.WriteLine($"d IsSaveEnabled: {isSaveEnabled}");
-#endif
     }
 
 
@@ -216,20 +232,42 @@ namespace RoomMap.Wpf {
     private CancellationTokenSource? tokenSource = null;
     private Task? pipelineTask = null;
     private long serialNumber = 0;
+    // UI Thread 外から操作で使用
     private bool isSaveEnabled = false;
     private Guid targetId = Guid.Empty;
 
     private WriteableBitmap? depthBitmap = null;
     private WriteableBitmap? colorBitmap = null;
 
-
-    /// <summary></summary>
-    private async void OnRecordingClick(object source, RoutedEventArgs e) {
+    /// <summary>
+    /// 記録の開始 / 停止
+    /// </summary>
+    private async void OnRecordingClick(
+        object          source,
+        RoutedEventArgs e) {
       if(! ViewModel.IsRecording) {
         // 開始
         serialNumber = 0;
-        targetId = Guid.NewGuid();
+        targetId     = Guid.NewGuid();
 
+        var outputDirectory = System.IO.Path.Join(
+            ViewModel.OutputDirectory,
+            targetId.ToString());
+
+        if(isSaveEnabled && ! System.IO.Directory.Exists(outputDirectory)) {
+          // ディレクトリの作成
+          try {
+            System.IO.Directory.CreateDirectory(outputDirectory);
+          } catch {
+            MessageBox.Show(
+                caption:        "エラー",
+                messageBoxText: $"出力先ディレクトリ({outputDirectory})\n作成に失敗しました.",
+                icon:           MessageBoxImage.Error,
+                button:         MessageBoxButton.OK);
+
+            return;
+          }
+        }
         context  = new Context();
         pipeline = new Pipeline(context);
 
@@ -302,6 +340,21 @@ namespace RoomMap.Wpf {
               format:       prof.Format);
         }
 
+        if(isSaveEnabled && ViewModel.SelectedDevice != null) {
+          try {
+            await ViewModel
+              .SelectedDevice
+              .SaveInfoAsync(System.IO.Path.Join(
+                    ViewModel.OutputDirectory,
+                    targetId.ToString(),
+                    "device.json"));
+          } catch(Exception except) {
+#if DEBUG
+            Debug.WriteLine($"w {except.GetType().Name} {except.Message}");
+#endif
+          }
+        }
+
         try {
           pipeline.Start(cfg);
           tokenSource = new CancellationTokenSource();
@@ -369,8 +422,6 @@ namespace RoomMap.Wpf {
               if(_outputDirectory != null) {
                 await depth.SaveAsync(_outputDirectory, serialNumber);
               }
-              Debug.WriteLine($"d {depth.Width}x{depth.Height} {depth.Profile.Stream} {depth.Profile.Format}");
-              Debug.WriteLine($"d {depth.Profile.Index} {depth.Number}");
 
               using(var colorized = colorizer.Process<VideoFrame>(depth).DisposeWith(frames)) {
                 await DepthImage.Dispatcher.BeginInvoke(
@@ -387,8 +438,6 @@ namespace RoomMap.Wpf {
               if(_outputDirectory != null) {
                 await color.SaveAsync(_outputDirectory, serialNumber);
               }
-
-              Debug.WriteLine($"d {color.Width}x{color.Height} {color.Profile.Stream} {color.Profile.Format}");
 
               await DepthImage.Dispatcher.BeginInvoke(
                   (Action<Image, VideoFrame>)InvokeApplyVideoFrame,
@@ -409,9 +458,12 @@ namespace RoomMap.Wpf {
       }
     }
 
-    /// <summary></summary>
-    private void InvokeApplyVideoFrame(Image image, VideoFrame frame) {
-      //Debug.WriteLine($"d {frame.Width}x{frame.Height} {frame.DataSize}");
+    /// <summary>
+    /// Image 反映
+    /// </summary>
+    private void InvokeApplyVideoFrame(
+        Image      image,
+        VideoFrame frame) {
       if(image.Source != null && image.Source is WriteableBitmap bmp) {
         var rect = new Int32Rect(0, 0, frame.Width, frame.Height);
         bmp.WritePixels(rect, frame.Data, frame.DataSize, frame.Stride);
