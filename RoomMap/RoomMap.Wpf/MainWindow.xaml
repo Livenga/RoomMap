@@ -13,6 +13,10 @@
   WindowState="Maximized"
   Closing="OnWindowClosing"
   Loaded="OnWindowLoaded">
+  <Window.Resources>
+    <ResourceDictionary Source="/RoomMap.Wpf;component/Themes/MainTheme.xaml" />
+  </Window.Resources>
+
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition MinWidth="240" Width="480" MaxWidth="720" />
@@ -139,6 +143,36 @@
             IsExpanded="True"
             Margin="0 3 0 6">
             <StackPanel Orientation="Vertical">
+              <CheckBox
+                Content="Enable Auto Exposure"
+                IsChecked="{Binding IsDepthAutoExposureEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Emitter Enabled"
+                IsChecked="{Binding IsDepthEmitterEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Emitter Always On"
+                IsChecked="{Binding IsDepthEmitterAlwaysOn, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Emitter On / Off"
+                IsChecked="{Binding IsDepthEmitterOn, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Thermal Compensation"
+                IsChecked="{Binding IsDepthThermalCompensationEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="HDR Enabled"
+                IsChecked="{Binding IsDepthHdrEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
               <controls:SliderGroup
                 Foreground="White"
                 DefaultValue="33000"
@@ -178,6 +212,26 @@
             IsExpanded="True"
             Margin="0 3 0 6">
             <StackPanel Orientation="Vertical">
+              <CheckBox
+                Content="Enable Auto Exposure"
+                IsChecked="{Binding IsColorAutoExposureEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Enable Auto White Balance"
+                IsChecked="{Binding IsColorAutoWhiteBalanceEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Auto Exposure Priority"
+                IsChecked="{Binding IsColorAutoExposurePriorityEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
+              <CheckBox
+                Content="Enable Backlight Compensation"
+                IsChecked="{Binding IsColorBacklightCompensationEnabled, Mode=TwoWay}"
+                Style="{StaticResource OptionCheckBoxStyle}" />
+
               <controls:SliderGroup
                 Foreground="White"
                 DefaultValue="0"
@@ -227,6 +281,46 @@
                 SmallChange="1"
                 TickFrequency="1"
                 Value="{Binding ColorGamma, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="0"
+                HeaderText="Hue"
+                Minimum="-180"
+                Maximum="180"
+                SmallChange="1"
+                TickFrequency="1"
+                Value="{Binding ColorHue, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="64"
+                HeaderText="Saturation"
+                Minimum="0"
+                Maximum="100"
+                SmallChange="1"
+                TickFrequency="1"
+                Value="{Binding ColorSaturation, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="50"
+                HeaderText="Sharpness"
+                Minimum="0"
+                Maximum="100"
+                SmallChange="1"
+                TickFrequency="1"
+                Value="{Binding ColorSharpness, Mode=TwoWay}" />
+
+              <controls:SliderGroup
+                Foreground="White"
+                DefaultValue="4600"
+                HeaderText="White Balance"
+                Minimum="2800"
+                Maximum="6500"
+                SmallChange="10"
+                TickFrequency="10"
+                Value="{Binding ColorWhiteBalance, Mode=TwoWay}" />
             </StackPanel>
           </Expander>
       </StackPanel>

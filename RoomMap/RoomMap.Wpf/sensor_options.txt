@@ -1,46 +1,125 @@
 Depth Options
-    Exposure = 33000 [1 - 165000]
-    Gain = 16 [16 - 248]
-    EnableAutoExposure = 1 [0 - 1]
-    VisualPreset = 0 [0 - 5]
-    LaserPower = 150 [0 - 360]
-    EmitterEnabled = 1 [0 - 2]
-    FramesQueueSize = 16 [0 - 32]
-    ErrorPollingEnabled = 1 [0 - 1]
-    OutputTriggerEnabled = 0 [0 - 1]
-    DepthUnits = 0.001 [1E-06 - 0.01]
-    StereoBaseline = 95.09303 [95.09303 - 95.09303]
-    InterCamSyncMode = 0 [0 - 260]
-    EmitterOnOff = 0 [0 - 1]
-    GlobalTimeEnabled = 1 [0 - 1]
-    EmitterAlwaysOn = 0 [0 - 1]
-    ThermalCompensation = 1 [0 - 1]
-    HdrEnabled = 0 [0 - 1]
-    SequenceName = 0 [0 - 3]
-    SequenceSize = 2 [2 - 2]
-    SequenceId = 0 [0 - 2]
-    auto_exposure_limit = 0 [1 - 165000]
-    auto_gain_limit = 0 [16 - 248]
+	Exposure (Depth Exposure (usec))
+		Current:33000, Range:[1 - 165000], Defualt:33000, Step=1
+
+	Gain (UVC image gain)
+		Current:16, Range:[16 - 248], Defualt:16, Step=1
+
+	EnableAutoExposure (Enable Auto Exposure)
+		Current:0, Range:[0 - 1], Defualt:1, Step=1
+
+	VisualPreset (Advanced-Mode Preset)
+		Current:0, Range:[0 - 5], Defualt:0, Step=1
+
+	LaserPower (Manual laser power in mw. applicable only when laser power mode is set to Manual)
+		Current:150, Range:[0 - 360], Defualt:150, Step=30
+
+	EmitterEnabled (Emitter select, 0-disable all emitters, 1-enable laser, 2-enable laser auto (opt), 3-enable LED (opt))
+		Current:1, Range:[0 - 2], Defualt:1, Step=1
+
+	FramesQueueSize (Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa)
+		Current:16, Range:[0 - 32], Defualt:16, Step=1
+
+	ErrorPollingEnabled (Enable / disable polling of camera internal errors)
+		Current:1, Range:[0 - 1], Defualt:0, Step=1
+
+	OutputTriggerEnabled (Generate trigger from the camera to external device once per frame)
+		Current:0, Range:[0 - 1], Defualt:0, Step=1
+
+	DepthUnits (Number of meters represented by a single depth unit)
+		Current:0.001, Range:[1E-06 - 0.01], Defualt:0.001, Step=1E-06
+
+	StereoBaseline (Distance in mm between the stereo imagers)
+		Current:95.09303, Range:[95.09303 - 95.09303], Defualt:95.09303, Step=0
+
+	InterCamSyncMode (Inter-camera synchronization mode: 0:Default, 1:Master, 2:Slave, 3:Full Salve, 4-258:Genlock with burst count of 1-255 frames for each trigger, 259 and 260 for two frames per trigger with laser ON-OFF and OFF-ON.)
+		Current:0, Range:[0 - 260], Defualt:0, Step=1
+
+	EmitterOnOff (Alternating emitter pattern, toggled on/off on per-frame basis)
+		Current:0, Range:[0 - 1], Defualt:0, Step=1
+
+	GlobalTimeEnabled (Enable/Disable global timestamp)
+		Current:1, Range:[0 - 1], Defualt:1, Step=1
+
+	EmitterAlwaysOn (Emitter always on mode: 0:disabled(default), 1:enabled)
+		Current:0, Range:[0 - 1], Defualt:0, Step=1
+
+	ThermalCompensation (Toggle thermal compensation adjustments mechanism)
+		Current:1, Range:[0 - 1], Defualt:0, Step=1
+
+	HdrEnabled (HDR Option)
+		Current:0, Range:[0 - 1], Defualt:0, Step=1
+
+	SequenceName (HDR Option)
+		Current:0, Range:[0 - 3], Defualt:1, Step=1
+
+	SequenceSize (HDR Option)
+		Current:2, Range:[2 - 2], Defualt:2, Step=1
+
+	SequenceId (HDR Option)
+		Current:0, Range:[0 - 2], Defualt:0, Step=1
+
+	auto_exposure_limit (Exposure limit is in microseconds. Default is 0 which means full exposure range. If the requested exposure limit is greater than frame time, it will be set to frame time at runtime. Setting will not take effect until next streaming session.)
+		Current:0, Range:[1 - 165000], Defualt:33000, Step=1
+
+	auto_gain_limit (Gain limits ranges from 16 to 248. Default is 0 which means full gain. If the requested gain limit is less than 16, it will be set to 16. If the requested gain limit is greater than 248, it will be set to 248. Setting will not take effect until next streaming session.)
+		Current:0, Range:[16 - 248], Defualt:16, Step=1
 
 Color Options
-    BacklightCompensation = 0 [0 - 1]
-    Brightness = 0 [-64 - 64]
-    Contrast = 50 [0 - 100]
-    Exposure = 156 [1 - 10000]
-    Gain = 64 [0 - 128]
-    Gamma = 300 [100 - 500]
-    Hue = 0 [-180 - 180]
-    Saturation = 64 [0 - 100]
-    Sharpness = 50 [0 - 100]
-    WhiteBalance = 4600 [2800 - 6500]
-    EnableAutoExposure = 1 [0 - 1]
-    EnableAutoWhiteBalance = 1 [0 - 1]
-    FramesQueueSize = 16 [0 - 32]
-    PowerLineFrequency = 2 [0 - 3]
-    AutoExposurePriority = 1 [0 - 1]
-    GlobalTimeEnabled = 1 [0 - 1]
+	BacklightCompensation (Enable / disable backlight compensation)
+		Current:1, Range:[0 - 1], Defualt:0, Step=1
+
+	Brightness (UVC image brightness)
+		Current:0, Range:[-64 - 64], Defualt:0, Step=1
+
+	Contrast (UVC image contrast)
+		Current:50, Range:[0 - 100], Defualt:50, Step=1
+
+	Exposure (Controls exposure time of color camera. Setting any value will disable auto exposure)
+		Current:1250, Range:[1 - 10000], Defualt:156, Step=1
+
+	Gain (UVC image gain)
+		Current:64, Range:[0 - 128], Defualt:64, Step=1
+
+	Gamma (UVC image gamma setting)
+		Current:300, Range:[100 - 500], Defualt:300, Step=1
+
+	Hue (UVC image hue)
+		Current:0, Range:[-180 - 180], Defualt:0, Step=1
+
+	Saturation (UVC image saturation setting)
+		Current:64, Range:[0 - 100], Defualt:64, Step=1
+
+	Sharpness (UVC image sharpness setting)
+		Current:50, Range:[0 - 100], Defualt:50, Step=1
+
+	WhiteBalance (Controls white balance of color image. Setting any value will disable auto white balance)
+		Current:4600, Range:[2800 - 6500], Defualt:4600, Step=10
+
+	EnableAutoExposure (Enable / disable auto-exposure)
+		Current:0, Range:[0 - 1], Defualt:1, Step=1
+
+	EnableAutoWhiteBalance (Enable / disable auto-white-balance)
+		Current:1, Range:[0 - 1], Defualt:1, Step=1
+
+	FramesQueueSize (Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa)
+		Current:16, Range:[0 - 32], Defualt:16, Step=1
+
+	PowerLineFrequency (Power Line Frequency)
+		Current:2, Range:[0 - 3], Defualt:3, Step=1
+
+	AutoExposurePriority (Restrict Auto-Exposure to enforce constant FPS rate. Turn ON to remove the restrictions (may result in FPS drop))
+		Current:1, Range:[0 - 1], Defualt:1, Step=1
+
+	GlobalTimeEnabled (Enable/Disable global timestamp)
+		Current:1, Range:[0 - 1], Defualt:1, Step=1
 
 Motion Options
-    FramesQueueSize = 16 [0 - 32]
-    EnableMotionCorrection = 1 [0 - 1]
-    GlobalTimeEnabled = 1 [0 - 1]
+	FramesQueueSize (Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa)
+		Current:16, Range:[0 - 32], Defualt:16, Step=1
+
+	EnableMotionCorrection (Enable/Disable Automatic Motion Data Correction)
+		Current:1, Range:[0 - 1], Defualt:1, Step=1
+
+	GlobalTimeEnabled (Enable/Disable global timestamp)
+		Current:1, Range:[0 - 1], Defualt:1, Step=1

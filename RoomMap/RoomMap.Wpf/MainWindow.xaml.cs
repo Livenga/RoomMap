@@ -51,15 +51,29 @@ namespace RoomMap.Wpf {
         ViewModel.OutputDirectory = cfg.OutputDirectory;
         ViewModel.IsSaveEnabled   = cfg.IsSaveEnabled;
 
-        ViewModel.DepthExposure   = cfg.DepthSensorOption.Exposure;
-        ViewModel.DepthGain       = cfg.DepthSensorOption.Gain;
-        ViewModel.DepthLaserPower = cfg.DepthSensorOption.LaserPower;
+        ViewModel.IsDepthAutoExposureEnabled        = cfg.DepthSensorOption.IsAutoExposureEnabled;
+        ViewModel.IsDepthEmitterEnabled             = cfg.DepthSensorOption.IsEmitterEnabled;
+        ViewModel.IsDepthEmitterAlwaysOn            = cfg.DepthSensorOption.IsEmitterAlwaysOn;
+        ViewModel.IsDepthEmitterOn                  = cfg.DepthSensorOption.IsEmitterOn;
+        ViewModel.IsDepthThermalCompensationEnabled = cfg.DepthSensorOption.IsThermalCompensationEnabled;
+        ViewModel.IsDepthHdrEnabled                 = cfg.DepthSensorOption.IsHdrEnabled;
+        ViewModel.DepthExposure                     = cfg.DepthSensorOption.Exposure;
+        ViewModel.DepthGain                         = cfg.DepthSensorOption.Gain;
+        ViewModel.DepthLaserPower                   = cfg.DepthSensorOption.LaserPower;
 
-        ViewModel.ColorBrightness = cfg.ColorSensorOption.Brightness;
-        ViewModel.ColorContrast   = cfg.ColorSensorOption.Contrast;
-        ViewModel.ColorExposure   = cfg.ColorSensorOption.Exposure;
-        ViewModel.ColorGain       = cfg.ColorSensorOption.Gain;
-        ViewModel.ColorGamma      = cfg.ColorSensorOption.Gamma;
+        ViewModel.IsColorAutoExposureEnabled          = cfg.ColorSensorOption.IsAutoExposureEnabled;
+        ViewModel.IsColorAutoWhiteBalanceEnabled      = cfg.ColorSensorOption.IsAutoWhiteBalanceEnabled;
+        ViewModel.IsColorAutoExposurePriorityEnabled  = cfg.ColorSensorOption.IsAutoExposurePriorityEnabled;
+        ViewModel.IsColorBacklightCompensationEnabled = cfg.ColorSensorOption.IsBacklightCompensationEnabled;
+        ViewModel.ColorBrightness                     = cfg.ColorSensorOption.Brightness;
+        ViewModel.ColorContrast                       = cfg.ColorSensorOption.Contrast;
+        ViewModel.ColorExposure                       = cfg.ColorSensorOption.Exposure;
+        ViewModel.ColorGain                           = cfg.ColorSensorOption.Gain;
+        ViewModel.ColorGamma                          = cfg.ColorSensorOption.Gamma;
+        ViewModel.ColorHue                            = cfg.ColorSensorOption.Hue;
+        ViewModel.ColorSaturation                     = cfg.ColorSensorOption.Saturation;
+        ViewModel.ColorSharpness                      = cfg.ColorSensorOption.Sharpness;
+        ViewModel.ColorWhiteBalance                   = cfg.ColorSensorOption.WhiteBalance;
       } catch(Exception except) {
 #if DEBUG
         Debug.WriteLine($"w {except.GetType().Name} {except.Message}");
@@ -101,15 +115,30 @@ namespace RoomMap.Wpf {
         OutputDirectory = ViewModel.OutputDirectory,
         IsSaveEnabled = ViewModel.IsSaveEnabled
       };
-      cfg.DepthSensorOption.Exposure   = ViewModel.DepthExposure;
-      cfg.DepthSensorOption.Gain       = ViewModel.DepthGain;
-      cfg.DepthSensorOption.LaserPower = ViewModel.DepthLaserPower;
 
-      cfg.ColorSensorOption.Brightness = ViewModel.ColorBrightness;
-      cfg.ColorSensorOption.Contrast   = ViewModel.ColorContrast;
-      cfg.ColorSensorOption.Exposure   = ViewModel.ColorExposure;
-      cfg.ColorSensorOption.Gain       = ViewModel.ColorGain;
-      cfg.ColorSensorOption.Gamma      = ViewModel.ColorGamma;
+      cfg.DepthSensorOption.IsAutoExposureEnabled        = ViewModel.IsDepthAutoExposureEnabled;
+      cfg.DepthSensorOption.IsEmitterEnabled             = ViewModel.IsDepthEmitterEnabled;
+      cfg.DepthSensorOption.IsEmitterOn                  = ViewModel.IsDepthEmitterOn;
+      cfg.DepthSensorOption.IsEmitterAlwaysOn            = ViewModel.IsDepthEmitterAlwaysOn;
+      cfg.DepthSensorOption.IsThermalCompensationEnabled = ViewModel.IsDepthThermalCompensationEnabled;
+      cfg.DepthSensorOption.IsHdrEnabled                 = ViewModel.IsDepthHdrEnabled;
+      cfg.DepthSensorOption.Exposure                     = ViewModel.DepthExposure;
+      cfg.DepthSensorOption.Gain                         = ViewModel.DepthGain;
+      cfg.DepthSensorOption.LaserPower                   = ViewModel.DepthLaserPower;
+
+      cfg.ColorSensorOption.IsAutoExposureEnabled          = ViewModel.IsColorAutoExposureEnabled;
+      cfg.ColorSensorOption.IsAutoWhiteBalanceEnabled      = ViewModel.IsColorAutoWhiteBalanceEnabled;
+      cfg.ColorSensorOption.IsAutoExposurePriorityEnabled  = ViewModel.IsColorAutoExposurePriorityEnabled;
+      cfg.ColorSensorOption.IsBacklightCompensationEnabled = ViewModel.IsColorBacklightCompensationEnabled;
+      cfg.ColorSensorOption.Brightness                     = ViewModel.ColorBrightness;
+      cfg.ColorSensorOption.Contrast                       = ViewModel.ColorContrast;
+      cfg.ColorSensorOption.Exposure                       = ViewModel.ColorExposure;
+      cfg.ColorSensorOption.Gain                           = ViewModel.ColorGain;
+      cfg.ColorSensorOption.Gamma                          = ViewModel.ColorGamma;
+      cfg.ColorSensorOption.Hue                            = ViewModel.ColorHue;
+      cfg.ColorSensorOption.Saturation                     = ViewModel.ColorSaturation;
+      cfg.ColorSensorOption.Sharpness                      = ViewModel.ColorSharpness;
+      cfg.ColorSensorOption.WhiteBalance                   = ViewModel.ColorWhiteBalance;
 
       try {
         // 設定保存
@@ -154,7 +183,8 @@ namespace RoomMap.Wpf {
               .Cast<Option>()
               .Where(opt => depthSensor.Options.Supports(opt))
               .Select(opt => depthSensor.Options[opt])) {
-            Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
+            Debug.WriteLine($"\t{opt.Key} ({opt.Description})");
+            Debug.WriteLine($"\t\tCurrent:{opt.Value}, Range:[{opt.Min} - {opt.Max}], Defualt:{opt.Default}, Step={opt.Step}\n");
           } */
 
           foreach(var prof in depthSensor.StreamProfiles
@@ -171,7 +201,8 @@ namespace RoomMap.Wpf {
               .Cast<Option>()
               .Where(opt => colorSensor.Options.Supports(opt))
               .Select(opt => colorSensor.Options[opt])) {
-            Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
+            Debug.WriteLine($"\t{opt.Key} ({opt.Description})");
+            Debug.WriteLine($"\t\tCurrent:{opt.Value}, Range:[{opt.Min} - {opt.Max}], Defualt:{opt.Default}, Step={opt.Step}\n");
           } */
 
           foreach(var prof in colorSensor.StreamProfiles
@@ -188,7 +219,8 @@ namespace RoomMap.Wpf {
               .Cast<Option>()
               .Where(opt => motionSensor.Options.Supports(opt))
               .Select(opt => motionSensor.Options[opt])) {
-            Debug.WriteLine($"\t{opt.Key} = {opt.Value} [{opt.Min} - {opt.Max}]");
+            Debug.WriteLine($"\t{opt.Key} ({opt.Description})");
+            Debug.WriteLine($"\t\tCurrent:{opt.Value}, Range:[{opt.Min} - {opt.Max}], Defualt:{opt.Default}, Step={opt.Step}\n");
           } */
 
           foreach(var prof in motionSensor.StreamProfiles) {
@@ -272,16 +304,30 @@ namespace RoomMap.Wpf {
         pipeline = new Pipeline(context);
 
         if(depthSensor != null) {
-          depthSensor.Options[Option.Exposure].Value   = ViewModel.DepthExposure;
-          depthSensor.Options[Option.Gain].Value       = ViewModel.DepthGain;
-          depthSensor.Options[Option.LaserPower].Value = ViewModel.DepthLaserPower;
+          depthSensor.Options[Option.EnableAutoExposure].Value  = ViewModel.IsDepthAutoExposureEnabled ? 1 : 0;
+          depthSensor.Options[Option.EmitterOnOff].Value        = ViewModel.IsDepthEmitterOn ? 1 : 0;
+          depthSensor.Options[Option.EmitterAlwaysOn].Value     = ViewModel.IsDepthEmitterAlwaysOn ? 1 : 0;
+          depthSensor.Options[Option.EmitterEnabled].Value      = ViewModel.IsDepthEmitterEnabled ? 1 : 0;
+          depthSensor.Options[Option.ThermalCompensation].Value = ViewModel.IsDepthThermalCompensationEnabled ? 1 : 0;
+          depthSensor.Options[Option.HdrEnabled].Value          = ViewModel.IsDepthHdrEnabled ? 1 : 0;
+          depthSensor.Options[Option.Exposure].Value            = ViewModel.DepthExposure;
+          depthSensor.Options[Option.Gain].Value                = ViewModel.DepthGain;
+          depthSensor.Options[Option.LaserPower].Value          = ViewModel.DepthLaserPower;
         }
         if(colorSensor != null) {
-          colorSensor.Options[Option.Brightness].Value = ViewModel.ColorBrightness;
-          colorSensor.Options[Option.Contrast].Value   = ViewModel.ColorContrast;
-          colorSensor.Options[Option.Exposure].Value   = ViewModel.ColorExposure;
-          colorSensor.Options[Option.Gain].Value       = ViewModel.ColorGain;
-          colorSensor.Options[Option.Gamma].Value      = ViewModel.ColorGamma;
+          colorSensor.Options[Option.EnableAutoExposure].Value     = ViewModel.IsColorAutoExposureEnabled ? 1 : 0;
+          colorSensor.Options[Option.EnableAutoWhiteBalance].Value = ViewModel.IsColorAutoWhiteBalanceEnabled ? 1 : 0;
+          colorSensor.Options[Option.AutoExposurePriority].Value   = ViewModel.IsColorAutoExposurePriorityEnabled ? 1 : 0;
+          colorSensor.Options[Option.BacklightCompensation].Value  = ViewModel.IsColorBacklightCompensationEnabled ? 1 : 0;
+          colorSensor.Options[Option.Brightness].Value             = ViewModel.ColorBrightness;
+          colorSensor.Options[Option.Contrast].Value               = ViewModel.ColorContrast;
+          colorSensor.Options[Option.Exposure].Value               = ViewModel.ColorExposure;
+          colorSensor.Options[Option.Gain].Value                   = ViewModel.ColorGain;
+          colorSensor.Options[Option.Gamma].Value                  = ViewModel.ColorGamma;
+          colorSensor.Options[Option.Hue].Value                    = ViewModel.ColorHue;
+          colorSensor.Options[Option.Saturation].Value             = ViewModel.ColorSaturation;
+          colorSensor.Options[Option.Sharpness].Value              = ViewModel.ColorSharpness;
+          colorSensor.Options[Option.WhiteBalance].Value           = ViewModel.ColorWhiteBalance;
         }
 
         var cfg = new Config();
@@ -365,7 +411,12 @@ namespace RoomMap.Wpf {
               tokenSource.Token);
 
           ViewModel.IsRecording = true;
-          } catch {
+          } catch(Exception except) {
+#if DEBUG
+            Debug.WriteLine($"e {except.GetType().Name} {except.Message}");
+            Debug.WriteLine(except.StackTrace);
+#endif
+
           tokenSource?.Dispose();
           pipeline.Dispose();
           context.Dispose();
@@ -395,7 +446,6 @@ namespace RoomMap.Wpf {
         return;
       }
 
-
       var _outputDirectory = Dispatcher.Invoke(
           (Func<string?>)(() => ViewModel.IsSaveEnabled
               ? System.IO.Path.Join(ViewModel.OutputDirectory, $"{targetId.ToString()}")
@@ -407,54 +457,60 @@ namespace RoomMap.Wpf {
 
       var pipeline = (Pipeline)state;
 
-      while(! (tokenSource?.Token.IsCancellationRequested ?? true)) {
-        using(var frames = pipeline.WaitForFrames(1500)) {
-          if(tokenSource?.Token.IsCancellationRequested ?? true) {
-            break;
-          }
+      try {
+        while(! (tokenSource?.Token.IsCancellationRequested ?? true)) {
+          using(var frames = pipeline.WaitForFrames(6000)) {
+            if(tokenSource?.Token.IsCancellationRequested ?? true) {
+              break;
+            }
 
-          var _frames = frames.Select(f => f.DisposeWith(frames));
+            var _frames = frames.Select(f => f.DisposeWith(frames));
 
-          using(var depth = _frames.FirstOrDefault(f => f.Is(Extension.VideoFrame) && f.Profile.Stream == Stream.Depth)?
-              .As<VideoFrame>()
-              .DisposeWith(frames)) {
-            if(depth != null) {
-              if(_outputDirectory != null) {
-                await depth.SaveAsync(_outputDirectory, serialNumber);
+            using(var depth = _frames.FirstOrDefault(f => f.Is(Extension.VideoFrame) && f.Profile.Stream == Stream.Depth)?
+                .As<VideoFrame>()
+                .DisposeWith(frames)) {
+              if(depth != null) {
+                if(_outputDirectory != null) {
+                  await depth.SaveAsync(_outputDirectory, serialNumber);
+                }
+
+                using(var colorized = colorizer.Process<VideoFrame>(depth).DisposeWith(frames)) {
+                  await DepthImage.Dispatcher.BeginInvoke(
+                      (Action<Image, VideoFrame>)InvokeApplyVideoFrame,
+                      new object[] { DepthImage, colorized });
+                }
               }
+            }
 
-              using(var colorized = colorizer.Process<VideoFrame>(depth).DisposeWith(frames)) {
+            using(var color = _frames.FirstOrDefault(f => f.Is(Extension.VideoFrame) && f.Profile.Stream == Stream.Color)?
+                .As<VideoFrame>()
+                .DisposeWith(frames)) {
+              if(color != null) {
+                if(_outputDirectory != null) {
+                  await color.SaveAsync(_outputDirectory, serialNumber);
+                }
+
                 await DepthImage.Dispatcher.BeginInvoke(
                     (Action<Image, VideoFrame>)InvokeApplyVideoFrame,
-                    new object[] { DepthImage, colorized });
+                    new object[] { ColorImage, color });
+              }
+            }
+
+            using(var motion = _frames.FirstOrDefault(f => f.Is(Extension.MotionFrame))?.As<MotionFrame>().DisposeWith(frames)) {
+              if(motion != null) {
+                await RealSenseAccelControl.Dispatcher.BeginInvoke(
+                    (Action<MotionFrame>)InvokeMotionData,
+                    new object[] { motion });
               }
             }
           }
 
-          using(var color = _frames.FirstOrDefault(f => f.Is(Extension.VideoFrame) && f.Profile.Stream == Stream.Color)?
-              .As<VideoFrame>()
-              .DisposeWith(frames)) {
-            if(color != null) {
-              if(_outputDirectory != null) {
-                await color.SaveAsync(_outputDirectory, serialNumber);
-              }
-
-              await DepthImage.Dispatcher.BeginInvoke(
-                  (Action<Image, VideoFrame>)InvokeApplyVideoFrame,
-                  new object[] { ColorImage, color });
-            }
-          }
-
-          using(var motion = _frames.FirstOrDefault(f => f.Is(Extension.MotionFrame))?.As<MotionFrame>().DisposeWith(frames)) {
-            if(motion != null) {
-              await RealSenseAccelControl.Dispatcher.BeginInvoke(
-                  (Action<MotionFrame>)InvokeMotionData,
-                  new object[] { motion });
-            }
-          }
+          ++serialNumber;
         }
-
-        ++serialNumber;
+      } catch(Exception except) {
+#if DEBUG
+        Debug.WriteLine($"e {except.GetType().Name} {except.Message}");
+#endif
       }
     }
 

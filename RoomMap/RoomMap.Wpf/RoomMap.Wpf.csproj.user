@@ -2,6 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="Controls\CheckBoxGroup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\MotionContorl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -10,10 +13,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\CheckBoxGroup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\MotionContorl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\SliderGroup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\MainTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

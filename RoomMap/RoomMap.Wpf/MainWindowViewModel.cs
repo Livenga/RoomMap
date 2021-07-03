@@ -57,6 +57,42 @@ namespace RoomMap.Wpf {
     }
 
     /// <summary></summary>
+    public bool IsDepthAutoExposureEnabled {
+      set => SetProperty(ref isDepthAutoExposureEnabled, value, nameof(IsDepthAutoExposureEnabled));
+      get => isDepthAutoExposureEnabled;
+    }
+
+    /// <summary></summary>
+    public bool IsDepthEmitterEnabled {
+      set => SetProperty(ref isDepthEmitterEnabled, value, nameof(IsDepthEmitterEnabled));
+      get => isDepthEmitterEnabled;
+    }
+
+    /// <summary></summary>
+    public bool IsDepthEmitterAlwaysOn {
+      set => SetProperty(ref isDepthEmitterAlwaysOn, value, nameof(IsDepthEmitterAlwaysOn));
+      get => isDepthEmitterAlwaysOn;
+    }
+
+    /// <summary></summary>
+    public bool IsDepthEmitterOn {
+      set => SetProperty(ref isDepthEmitterOn, value, nameof(IsDepthEmitterOn));
+      get => isDepthEmitterOn;
+    }
+
+    /// <summary></summary>
+    public bool IsDepthThermalCompensationEnabled {
+      set => SetProperty(ref isDepthThermalCompensationEnabled, value, nameof(IsDepthThermalCompensationEnabled));
+      get => isDepthThermalCompensationEnabled;
+    }
+
+    /// <summary></summary>
+    public bool IsDepthHdrEnabled {
+      set => SetProperty(ref isDepthHdrEnabled, value, nameof(IsDepthHdrEnabled));
+      get => isDepthHdrEnabled;
+    }
+
+    /// <summary></summary>
     public float DepthExposure {
       set => SetProperty(ref depthExposure, value, nameof(DepthExposure));
       get => depthExposure;
@@ -72,6 +108,30 @@ namespace RoomMap.Wpf {
     public float DepthLaserPower {
       set => SetProperty(ref depthLaserPower, value, nameof(DepthLaserPower));
       get => depthLaserPower;
+    }
+
+    /// <summary></summary>
+    public bool IsColorAutoExposureEnabled {
+      set => SetProperty(ref isColorAutoExposureEnabled, value, nameof(IsColorAutoExposureEnabled));
+      get => isColorAutoExposureEnabled;
+    }
+
+    /// <summary></summary>
+    public bool IsColorAutoWhiteBalanceEnabled {
+      set => SetProperty(ref isColorAutoWhiteBalanceEnabled, value, nameof(IsColorAutoWhiteBalanceEnabled));
+      get => isColorAutoWhiteBalanceEnabled;
+    }
+
+    /// <summary></summary>
+    public bool IsColorAutoExposurePriorityEnabled {
+      set => SetProperty(ref isColorAutoExposurePriorityEnabled, value, nameof(IsColorAutoExposurePriorityEnabled));
+      get => isColorAutoExposurePriorityEnabled;
+    }
+
+    /// <summary></summary>
+    public bool IsColorBacklightCompensationEnabled {
+      set => SetProperty(ref isColorBacklightCompensationEnabled, value, nameof(IsColorBacklightCompensationEnabled));
+      get => isColorBacklightCompensationEnabled;
     }
 
     /// <summary></summary>
@@ -105,6 +165,30 @@ namespace RoomMap.Wpf {
     }
 
     /// <summary></summary>
+    public float ColorHue {
+      set => SetProperty(ref colorHue, value, nameof(ColorHue));
+      get => colorHue;
+    }
+
+    /// <summary></summary>
+    public float ColorSaturation {
+      set => SetProperty(ref colorSaturation, value, nameof(ColorSaturation));
+      get => colorSaturation;
+    }
+
+    /// <summary></summary>
+    public float ColorSharpness {
+      set => SetProperty(ref colorSharpness, value, nameof(ColorSharpness));
+      get => colorSharpness;
+    }
+
+    /// <summary></summary>
+    public float ColorWhiteBalance {
+      set => SetProperty(ref colorWhiteBalance, value, nameof(ColorWhiteBalance));
+      get => colorWhiteBalance;
+    }
+
+    /// <summary></summary>
     public string DepthFrameText {
       set => SetProperty(ref depthFrameText, value, nameof(DepthFrameText));
       get => depthFrameText;
@@ -131,15 +215,29 @@ namespace RoomMap.Wpf {
     private bool isRecording = false;
     private string outputDirectory = string.Empty;
 
+    private bool isDepthAutoExposureEnabled = true;
+    private bool isDepthEmitterEnabled = true;
+    private bool isDepthEmitterOn = false;
+    private bool isDepthEmitterAlwaysOn = false;
+    private bool isDepthThermalCompensationEnabled = true;
+    private bool isDepthHdrEnabled = false;
     private float depthExposure   = 33000f;
     private float depthGain       = 16f;
     private float depthLaserPower = 150f;
 
+    private bool isColorAutoExposureEnabled = true;
+    private bool isColorAutoWhiteBalanceEnabled = true;
+    private bool isColorAutoExposurePriorityEnabled = true;
+    private bool isColorBacklightCompensationEnabled = false;
     private float colorBrightness = 0f;
     private float colorContrast = 50f;
     private float colorExposure = 156f;
     private float colorGain = 64f;
     private float colorGamma = 300f;
+    private float colorHue = 0f;
+    private float colorSaturation = 64f;
+    private float colorSharpness = 50f;
+    private float colorWhiteBalance = 4600f;
 
     private string depthFrameText = string.Empty;
     private string colorFrameText = string.Empty;
