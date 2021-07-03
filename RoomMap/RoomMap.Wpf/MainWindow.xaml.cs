@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 namespace RoomMap.Wpf {
   using Microsoft.WindowsAPICodePack.Dialogs;
   using Intel.RealSense;
+  using RoomMap.Wpf.Attributes;
   using RoomMap.Wpf.Data;
   using RoomMap.Wpf.Extensions;
 
@@ -155,6 +156,36 @@ namespace RoomMap.Wpf {
     private Sensor? depthSensor = null;
     private Sensor? colorSensor = null;
     private Sensor? motionSensor = null;
+
+    /// <summary></summary>
+    private void ApplySensorOptions(
+        Sensor     sensor,
+        SensorType sensorType) {
+      foreach(var kvp in ViewModel.GetType()
+          .GetProperties()
+          .ToDictionary(
+            prop => prop.Name,
+            prop => (RealSenseSensorOptionAttribute?)prop.GetCustomAttributes(typeof(RealSenseSensorOptionAttribute), true).FirstOrDefault())
+          .Where(kvp => kvp.Value != null && kvp.Value.SensorType == sensorType)) {
+        var _value = typeof(MainWindowViewModel).GetProperty(kvp.Key)?.GetValue(ViewModel);
+
+        if(kvp.Value != null && _value != null) {
+          switch(_value) {
+            case float fValue:
+              sensor.Options[kvp.Value.Option].Value = fValue;
+              break;
+            case bool bValue:
+              sensor.Options[kvp.Value.Option].Value = (bValue ? 1f : 0f);
+              break;
+
+            default:
+              Debug.WriteLine($"w [{sensorType}] 未対応のタイプ({_value.GetType().Name})が指定されました.");
+              break;
+          }
+        }
+      }
+    }
+
 
     /// <summary>
     /// 操作対象デバイス変更
@@ -304,6 +335,11 @@ namespace RoomMap.Wpf {
         pipeline = new Pipeline(context);
 
         if(depthSensor != null) {
+          ApplySensorOptions(
+              sensor:     depthSensor,
+              sensorType: SensorType.Depth);
+
+         /*
           depthSensor.Options[Option.EnableAutoExposure].Value  = ViewModel.IsDepthAutoExposureEnabled ? 1 : 0;
           depthSensor.Options[Option.EmitterOnOff].Value        = ViewModel.IsDepthEmitterOn ? 1 : 0;
           depthSensor.Options[Option.EmitterAlwaysOn].Value     = ViewModel.IsDepthEmitterAlwaysOn ? 1 : 0;
@@ -313,8 +349,14 @@ namespace RoomMap.Wpf {
           depthSensor.Options[Option.Exposure].Value            = ViewModel.DepthExposure;
           depthSensor.Options[Option.Gain].Value                = ViewModel.DepthGain;
           depthSensor.Options[Option.LaserPower].Value          = ViewModel.DepthLaserPower;
+          */
         }
         if(colorSensor != null) {
+          ApplySensorOptions(
+              sensor:     colorSensor,
+              sensorType: SensorType.Color);
+
+          /*
           colorSensor.Options[Option.EnableAutoExposure].Value     = ViewModel.IsColorAutoExposureEnabled ? 1 : 0;
           colorSensor.Options[Option.EnableAutoWhiteBalance].Value = ViewModel.IsColorAutoWhiteBalanceEnabled ? 1 : 0;
           colorSensor.Options[Option.AutoExposurePriority].Value   = ViewModel.IsColorAutoExposurePriorityEnabled ? 1 : 0;
@@ -328,6 +370,7 @@ namespace RoomMap.Wpf {
           colorSensor.Options[Option.Saturation].Value             = ViewModel.ColorSaturation;
           colorSensor.Options[Option.Sharpness].Value              = ViewModel.ColorSharpness;
           colorSensor.Options[Option.WhiteBalance].Value           = ViewModel.ColorWhiteBalance;
+          */
         }
 
         var cfg = new Config();
